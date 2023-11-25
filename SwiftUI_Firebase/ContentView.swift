@@ -21,7 +21,7 @@ struct ContentView: View {
          }.onAppear{
              let authUser = try? AuthManager.shared.getUser()
              self.isUserNotAuthenticated = authUser == nil ? true: false
-            
+             try? AuthManager.shared.checkSignInProvider()
             
      }
          .padding()

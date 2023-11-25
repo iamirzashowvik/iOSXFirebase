@@ -13,6 +13,32 @@ struct IntroView: View {
     var body: some View {
         VStack {
             Spacer()
+            
+            Button{
+                AuthManager.shared.signInWithGoogle()
+                isUserNotAuthenticated=false
+            } label: {
+                HStack {
+                    Text("Sign In With")
+                    Image("google_logo")
+                                .resizable()
+                                .foregroundColor(Color.red)
+                                .aspectRatio(contentMode: .fit)
+                                .padding(3)
+                                .frame(width: 40, height: 40)
+                                .background(Color.white)
+                                .cornerRadius(50)
+                    
+             
+                         
+                }.font(.headline)
+                    .foregroundColor(.white)
+                    .frame(height:55)
+                    .frame(maxWidth: .infinity)
+                
+                    .background(Color.blue)
+                .cornerRadius(20)
+            }
             NavigationLink{
                 SignInWithEmailView(isUserNotAuthenticated: $isUserNotAuthenticated)
             } label: {

@@ -7,6 +7,9 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseCore
+import GoogleSignIn
+
 
 
 struct AuthDataResultModel{
@@ -39,7 +42,7 @@ final class AuthManager{
     func signInUser(email:String, password:String) async throws -> AuthDataResultModel{
         print("sign in")
       let authResult = try await  Auth.auth().signIn(withEmail:
-                                                        "showvikmirza@gmail.com", password: "123456")
+                                               email, password: password)
         print(authResult.user.email)
         return AuthDataResultModel(user: authResult.user)
     }
@@ -60,4 +63,86 @@ final class AuthManager{
           print("Error signing out: %@", signOutError)
         }
     }
+    
+    func verifyEmail() {
+        Task{
+            do{
+                 Auth.auth().currentUser?.sendEmailVerification { error in
+                 print(error)
+                }
+            }
+        }
+    }
+    
+   
+    func resetPassword() {
+        Task{
+            do{
+               try Auth.auth().sendPasswordReset(withEmail: getUser().email!) { error in
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    
+    func checkSignInProvider() throws-> [AuthProviderOption]{
+        
+        guard let providerData = Auth.auth().currentUser?.providerData else {
+            throw URLError(.badServerResponse)
+        }
+        var providers :[AuthProviderOption]=[]
+        for provider in providerData {
+            if let option = AuthProviderOption(rawValue: provider.providerID){
+                providers.append(option)
+            } else{
+                assertionFailure("Provider option not found")
+            }
+        }
+        return providers;
+    }
+    
+    
+    func signInWithGoogle(){
+        Task {
+        
+            do{
+                guard let presentingVC = await (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first?.rootViewController else {return}
+                  
+                guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+
+                // Create Google Sign In configuration object.
+                let config = GIDConfiguration(clientID: clientID)
+                GIDSignIn.sharedInstance.configuration = config
+
+                // Start the sign in flow!
+                GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC) { [unowned self] result, error in
+                  guard error == nil else {
+                      return
+                  }
+
+                  guard let user = result?.user,
+                    let idToken = user.idToken?.tokenString
+                  else {
+                    return
+                  }
+
+                  let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                                 accessToken: user.accessToken.tokenString)
+                    Auth.auth().signIn(with: credential) { result, error in
+
+                      // At this point, our user is signed in
+                    }
+                        
+                  // ...
+                }
+            }
+        }
+    }
+}
+
+
+enum AuthProviderOption:String{
+    case email = "password"
+    case gmail = "google.com"
 }
