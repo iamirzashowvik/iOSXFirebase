@@ -7,66 +7,85 @@
 
 import SwiftUI
 
-final class SignInWithEmailViewModel : ObservableObject{
-    @Published var email = ""
-    @Published var password = ""
-    @Published var isPasswordHidden = true
-    
-    func togglePassword(){
-        isPasswordHidden.toggle()
-}
-    
-    func signIn() async throws{
-        
-        guard !email.isEmpty, !password.isEmpty else {
-            print("email/password is empty")
-            return
-        }
-        let _ = try await AuthManager.shared.signInUser(email: email, password: password);
-    }
-    func signUp() async throws{
-        
-        guard !email.isEmpty, !password.isEmpty else {
-            print("email/password is empty")
-            return
-        }
-        let _ = try await AuthManager.shared.createUser(email: email, password: password);
-    }
-}
+import AVKit
 
 
 struct SignInWithEmailView: View {
     @Binding var  isUserNotAuthenticated:Bool
+    let url:String
     @ObservedObject private var viewModel = SignInWithEmailViewModel()
+    @State private var player = AVPlayer(url:URL(string: "https://videosforxample.s3.ap-southeast-1.amazonaws.com/pexels-cedric-fauntleroy-7251362+(720p).mp4")!)
     var body: some View {
-      VStack {
+        ZStack (){
+            VideoPlayer(player: player)
+                .onAppear() {
+
+                    player.play()
+                }.scaledToFill().ignoresSafeArea()
+            XYZ.onAppear{
+             
+                player.replaceCurrentItem(with: AVPlayerItem(url:URL(string: url)!))
+            }
+        }.frame(width: UIScreen.screenWidth,height: UIScreen.screenHeight)
+            .edgesIgnoringSafeArea(.all)
+            .navigationTitle("Sign In")
+            .navigationBarTitleTextColor(Color.white)
+//            .navigationBarBackButtonHidden(true)
+        
+    }
+}
+
+struct SignInWithEmailView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationStack{
+            SignInWithEmailView(isUserNotAuthenticated: .constant(true), url: "")
+        }
+    }
+}
+
+
+
+extension SignInWithEmailView{
+    var XYZ:some View{
+        VStack {
+            
+           
+            Spacer()
+            
           TextField("Email..", text: $viewModel.email)
-              .padding()
-              .background(Color.gray.opacity(0.1))
+                .frame(width:UIScreen.screenWidth-60)
+                .padding()
+              .background(.ultraThinMaterial)
               .cornerRadius(20)
-          
-         
+              
+              
+
+
               HStack {
                   if viewModel.isPasswordHidden {
                       SecureField("Password..", text: $viewModel.password)
                           .padding()
-                          .background(Color.gray.opacity(0.1))
+                          .background(.ultraThinMaterial)
                       .cornerRadius(20)}
                   else {
                       TextField("Password..", text: $viewModel.password)
                           .padding()
-                          .background(Color.gray.opacity(0.1))
+                          .background(.ultraThinMaterial)
                           .cornerRadius(20)
                   }
+                  
                   Image(systemName: viewModel.isPasswordHidden ? "eye.slash" : "eye" )
                                  .foregroundColor(.white)
                                  .padding()
-                                 .background(Color.blue)
+                                 .background(.thinMaterial)
                                  .cornerRadius(20).onTapGesture {
                                      viewModel.togglePassword()
                                  }
-                  
-              }
+
+              }.frame(width:UIScreen.screenWidth-30)
+                
+             
+            
           Button{
               Task{
                   do {
@@ -91,20 +110,67 @@ struct SignInWithEmailView: View {
                   .frame(maxWidth: .infinity)
                   .background(Color.blue)
                   .cornerRadius(20)
-          }
-              
-          
-         
-        }.navigationTitle("Sign In With Email")
-            .padding()
+          }.frame(width:UIScreen.screenWidth-30)
+                .padding()
+
+
+
+        }.padding()
         
     }
 }
 
-struct SignInWithEmailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack{
-            SignInWithEmailView(isUserNotAuthenticated: .constant(true))
-        }
-    }
-}
+
+                        public enum Result<T> {
+                            case success(T)
+                            case failure(NSError)
+                        }
+
+                        class CacheManager {
+
+                            static let shared = CacheManager()
+
+                            private let fileManager = FileManager.default
+
+                            private lazy var mainDirectoryUrl: URL = {
+
+                                let documentsUrl = self.fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first!
+                                return documentsUrl
+                            }()
+
+                            func getFileWith(stringUrl: String, completionHandler: @escaping (Result<URL>) -> Void ) {
+
+
+                                let file = directoryFor(stringUrl: stringUrl)
+
+                                //return file path if already exists in cache directory
+                                guard !fileManager.fileExists(atPath: file.path)  else {
+                                    completionHandler(Result.success(file))
+                                    return
+                                }
+
+                                DispatchQueue.global().async {
+
+                                    if let videoData = NSData(contentsOf: URL(string: stringUrl)!) {
+                                        videoData.write(to: file, atomically: true)
+
+                                        DispatchQueue.main.async {
+                                            completionHandler(Result.success(file))
+                                        }
+                                    } else {
+                                        DispatchQueue.main.async {
+                                            completionHandler(Result.failure(NSError(domain: "SomeErrorDomain", code:  -2001 )))
+                                        }
+                                    }
+                                }
+                            }
+
+                            private func directoryFor(stringUrl: String) -> URL {
+
+                                let fileURL = URL(string: stringUrl)!.lastPathComponent
+
+                                let file = self.mainDirectoryUrl.appendingPathComponent(fileURL)
+
+                                return file
+                            }
+                        }

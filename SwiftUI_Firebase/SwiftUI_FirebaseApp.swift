@@ -9,6 +9,8 @@ import SwiftUI
 import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
+import FirebaseFirestore
+
 
 @main
 struct SwiftUI_FirebaseApp: App {
@@ -25,6 +27,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     FirebaseApp.configure()
+      let db = Firestore.firestore()
+    
+              print(db) // silence warning
 
     return true
   }

@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseCore
 import GoogleSignIn
 
-
+// https://swiftuixfirebase.firebaseapp.com/__/auth/handler
 
 struct AuthDataResultModel{
     let uid:String
@@ -28,7 +28,7 @@ struct AuthDataResultModel{
 final class AuthManager{
     
     static let shared = AuthManager()
-  private  init(){
+    private  init(){
         
     }
    
@@ -87,7 +87,7 @@ final class AuthManager{
     
     
     func checkSignInProvider() throws-> [AuthProviderOption]{
-        
+        CloudDBManager().getData()
         guard let providerData = Auth.auth().currentUser?.providerData else {
             throw URLError(.badServerResponse)
         }
@@ -102,40 +102,40 @@ final class AuthManager{
         return providers;
     }
     
+    // Define a closure type for the callback
+        typealias AuthenticationCallback = () -> Void
     
-    func signInWithGoogle(){
-        Task {
-        
-            do{
-                guard let presentingVC = await (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first?.rootViewController else {return}
-                  
-                guard let clientID = FirebaseApp.app()?.options.clientID else { return }
+    func signInWithGoogle(completion: @escaping AuthenticationCallback)async throws{
+        CloudDBManager().addData()
+        do{
+            guard let presentingVC = await (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.windows.first?.rootViewController else {return}
+              
+            guard let clientID = FirebaseApp.app()?.options.clientID else { return }
 
-                // Create Google Sign In configuration object.
-                let config = GIDConfiguration(clientID: clientID)
-                GIDSignIn.sharedInstance.configuration = config
+            // Create Google Sign In configuration object.
+            let config = GIDConfiguration(clientID: clientID)
+            GIDSignIn.sharedInstance.configuration = config
 
-                // Start the sign in flow!
-                GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC) { [unowned self] result, error in
-                  guard error == nil else {
-                      return
-                  }
+            // Start the sign in flow!
+            GIDSignIn.sharedInstance.signIn(withPresenting: presentingVC) { [unowned self] result, error in
+              guard error == nil else {
+                  return
+              }
 
-                  guard let user = result?.user,
-                    let idToken = user.idToken?.tokenString
-                  else {
-                    return
-                  }
+              guard let user = result?.user,
+                let idToken = user.idToken?.tokenString
+              else {
+                return
+              }
 
-                  let credential = GoogleAuthProvider.credential(withIDToken: idToken,
-                                                                 accessToken: user.accessToken.tokenString)
-                    Auth.auth().signIn(with: credential) { result, error in
-
-                      // At this point, our user is signed in
-                    }
-                        
-                  // ...
+              let credential = GoogleAuthProvider.credential(withIDToken: idToken,
+                                                             accessToken: user.accessToken.tokenString)
+                Auth.auth().signIn(with: credential) { result, error in
+                    completion()
+                  // At this point, our user is signed in
                 }
+                    
+              // ...
             }
         }
     }
