@@ -5,12 +5,11 @@
 //  Created by Mirza Showvik on 5/11/23.
 //
 
-import SwiftUI
-import FirebaseCore
 import FirebaseAuth
-import GoogleSignIn
+import FirebaseCore
 import FirebaseFirestore
-
+import GoogleSignIn
+import SwiftUI
 
 @main
 struct SwiftUI_FirebaseApp: App {
@@ -22,21 +21,20 @@ struct SwiftUI_FirebaseApp: App {
     }
 }
 
-
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-      let db = Firestore.firestore()
-    
-              print(db) // silence warning
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool
+    {
+        FirebaseApp.configure()
+        let db = Firestore.firestore()
 
-    return true
-  }
-    
+        return true
+    }
+
     func application(_ app: UIApplication,
                      open url: URL,
-                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-      return GIDSignIn.sharedInstance.handle(url)
+                     options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool
+    {
+        return GIDSignIn.sharedInstance.handle(url)
     }
 }

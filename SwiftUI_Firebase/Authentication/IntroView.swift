@@ -10,37 +10,28 @@
 import SwiftUI
 
 struct IntroView: View {
+    @Binding var isUserNotAuthenticated: Bool
     
-    @Binding var  isUserNotAuthenticated:Bool
-    
-    
-    
-    
-   func toggleIsUserNotAuthenticated(){
+    func toggleIsUserNotAuthenticated() {
         isUserNotAuthenticated = false
     }
     
-    
-    @State private var urlX=""
+    @State private var urlX = ""
     var body: some View {
         ZStack(alignment: .leading) {
             Image("highway").resizable()
             
             VStack(alignment: .leading) {
-                
-                
-                 
                 Spacer()
+                
                 Button(action: {
-                    Task{
-                        try  await AuthManager.shared.signInWithGoogle{
+                    Task {
+                        try await AuthManager.shared.signInWithGoogle {
                             toggleIsUserNotAuthenticated()
                         }
-                        
                     }
                 }) {
                     HStack {
-                       
                         Image("google_logo")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -55,36 +46,27 @@ struct IntroView: View {
                     .frame(maxWidth: .infinity)
                     .background(.ultraThinMaterial)
                     .cornerRadius(20)
-                }.onAppear{
+                }.onAppear {
                     CacheManager.shared.getFileWith(stringUrl: "https://videosforxample.s3.ap-southeast-1.amazonaws.com/pexels-cedric-fauntleroy-7251362+(720p).mp4") { result in
 
-                            switch result {
-                            case .success(let url):
-                                print(url.absoluteString)
-                                DispatchQueue.main.async {
-                                    self.urlX =  url.absoluteString
-                                    
-                                }
-                                 // do some magic with path to saved video
-                            case .failure(let error):
-                                print(error)
-                                // handle errror
-                               
+                        switch result {
+                        case .success(let url):
+                            print(url.absoluteString)
+                            DispatchQueue.main.async {
+                                self.urlX = url.absoluteString
                             }
+                       
+                        case .failure(let error):
+                            print(error)
                         }
+                    }
                 }
                 
                 if urlX == "" {
                     Text("Loading...")
-                }else{
-//                    VStack{
-//                        Text( urlX )
-//
-//                    }
-                    
-                    NavigationLink(destination: SignInWithEmailView(isUserNotAuthenticated: $isUserNotAuthenticated
-                                                                    , url: urlX
-                                                                   )
+                } else {
+                    NavigationLink(destination: SignInWithEmailView(isUserNotAuthenticated: $isUserNotAuthenticated,
+                                                                    url: urlX)
                     ) {
                         Text("Sign In with Email")
                             .font(.headline)
@@ -97,9 +79,8 @@ struct IntroView: View {
                 }
             }
             .padding()
-            .frame(height:UIScreen.screenHeight)
+            .frame(height: UIScreen.screenHeight)
             .cornerRadius(20)
-            
         }
         .edgesIgnoringSafeArea(.all)
         .navigationTitle("Sign In")
@@ -116,11 +97,10 @@ struct IntroView_Previews: PreviewProvider {
     }
 }
 
-
-extension UIScreen{
-   static let screenWidth = UIScreen.main.bounds.size.width
-   static let screenHeight = UIScreen.main.bounds.size.height
-   static let screenSize = UIScreen.main.bounds.size
+extension UIScreen {
+    static let screenWidth = UIScreen.main.bounds.size.width
+    static let screenHeight = UIScreen.main.bounds.size.height
+    static let screenSize = UIScreen.main.bounds.size
 }
 
 extension View {
@@ -133,10 +113,9 @@ extension View {
         let uiColor = UIColor(color)
     
         // Set appearance for both normal and large sizes.
-        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: uiColor ]
-        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: uiColor ]
+        UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: uiColor]
+        UINavigationBar.appearance().largeTitleTextAttributes = [.foregroundColor: uiColor]
     
         return self
     }
 }
-

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C1536F342B175E1E00DB771E /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1536F332B175E1E00DB771E /* CacheService.swift */; };
+		C1536F342B175E1E00DB771E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1536F332B175E1E00DB771E /* CacheManager.swift */; };
 		C1536F372B175E6D00DB771E /* SignInWithEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1536F362B175E6D00DB771E /* SignInWithEmailViewModel.swift */; };
 		C17240EB2AF7E64A00AF9E6D /* SwiftUI_FirebaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17240EA2AF7E64A00AF9E6D /* SwiftUI_FirebaseApp.swift */; };
 		C17240ED2AF7E64A00AF9E6D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17240EC2AF7E64A00AF9E6D /* ContentView.swift */; };
@@ -29,7 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C1536F332B175E1E00DB771E /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
+		C1536F332B175E1E00DB771E /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		C1536F362B175E6D00DB771E /* SignInWithEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInWithEmailViewModel.swift; sourceTree = "<group>"; };
 		C17240E72AF7E64A00AF9E6D /* SwiftUI_Firebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftUI_Firebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C17240EA2AF7E64A00AF9E6D /* SwiftUI_FirebaseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_FirebaseApp.swift; sourceTree = "<group>"; };
@@ -63,12 +63,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C1536F322B175E0C00DB771E /* CacheService */ = {
+		C1536F322B175E0C00DB771E /* CacheManger */ = {
 			isa = PBXGroup;
 			children = (
-				C1536F332B175E1E00DB771E /* CacheService.swift */,
+				C1536F332B175E1E00DB771E /* CacheManager.swift */,
 			);
-			path = CacheService;
+			path = CacheManger;
 			sourceTree = "<group>";
 		};
 		C1536F352B175E5600DB771E /* ViewModels */ = {
@@ -99,15 +99,15 @@
 		C17240E92AF7E64A00AF9E6D /* SwiftUI_Firebase */ = {
 			isa = PBXGroup;
 			children = (
-				C1536F322B175E0C00DB771E /* CacheService */,
-				C1FBAE0C2B1240800039EF2E /* GoogleService-Info.plist */,
-				C1FBAE022B11FE320039EF2E /* SwiftUI-Firebase-Info.plist */,
-				C1FBAE092B123E980039EF2E /* Database */,
 				C1FBADF32B11AF340039EF2E /* Authentication */,
 				C1FBADFA2B11CCFA0039EF2E /* Home */,
 				C17240EA2AF7E64A00AF9E6D /* SwiftUI_FirebaseApp.swift */,
 				C17240EC2AF7E64A00AF9E6D /* ContentView.swift */,
 				C17240EE2AF7E64B00AF9E6D /* Assets.xcassets */,
+				C1FBAE092B123E980039EF2E /* Database */,
+				C1536F322B175E0C00DB771E /* CacheManger */,
+				C1FBAE022B11FE320039EF2E /* SwiftUI-Firebase-Info.plist */,
+				C1FBAE0C2B1240800039EF2E /* GoogleService-Info.plist */,
 				C17240F02AF7E64B00AF9E6D /* Preview Content */,
 			);
 			path = SwiftUI_Firebase;
@@ -246,7 +246,7 @@
 				C1FBADFC2B11CD090039EF2E /* HomeView.swift in Sources */,
 				C1FBADF72B11B9C10039EF2E /* SignInWithEmailView.swift in Sources */,
 				C1FBAE0B2B123EE70039EF2E /* CloudDBManager.swift in Sources */,
-				C1536F342B175E1E00DB771E /* CacheService.swift in Sources */,
+				C1536F342B175E1E00DB771E /* CacheManager.swift in Sources */,
 				C1FBADF92B11C3B80039EF2E /* AuthManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
